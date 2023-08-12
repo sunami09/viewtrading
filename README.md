@@ -1,70 +1,165 @@
-# Getting Started with Create React App
+# Trading View Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project provides a comprehensive trading view dashboard, allowing users to search for and view detailed information about stocks, cryptocurrencies, and other financial instruments.
 
-## Available Scripts
+🌐 [**Live Site**](https://viewtrading.netlify.app/)
 
-In the project directory, you can run:
 
-### `npm start`
+## Table of Contents
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Code Snippets](#code-snippets)
+- [Contributing](#contributing)
+- [License](#license)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+- **Search Functionality**: Allows users to search for financial instruments using ticker symbols.
+- **Detailed Views**: Displays comprehensive information about the selected instrument, including CEO, headquarters, industry, description, and more.
+- **Error Handling**: Gracefully handles errors and provides user-friendly error messages.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<p align="center">
+  <img src="https://github.com/sunami09/viewtrading/assets/66564001/53b2b463-aac3-4a1b-8dc3-f639cb3b7c3f" >
+</p>
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+git clone https://github.com/yourusername/trading-view.git
+cd trading-view
+npm install
+npm start
+```
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Open the application in your browser.
+2. Use the search bar to enter the ticker symbol of the financial instrument you're interested in.
+3. View detailed information about the instrument.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Code Snippets
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Handling API Keys
 
-## Learn More
+To keep API keys secure, we use environment variables:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```javascript
+const API_KEY = process.env.REACT_APP_API_KEY;
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This ensures that the API key is not exposed in the code and can be securely managed.
 
-### Code Splitting
+### Formatting Market Cap
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To present large numbers in a user-friendly format:
 
-### Analyzing the Bundle Size
+```javascript
+function formatMarketCap(value) {
+  if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
+  if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
+  if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
+  if (value >= 1e3) return `$${(value / 1e3).toFixed(2)}K`;
+  return `$${value}`;
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Error Handling
 
-### Making a Progressive Web App
+To handle errors gracefully:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```javascript
+try {
+  // API call or other operations
+} catch (error) {
+  console.error("An error occurred:", error.message);
+}
+```
 
-### Advanced Configuration
+### Truncating Descriptions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+To ensure descriptions are concise and user-friendly:
 
-### Deployment
+```javascript
+function truncateDescription(desc) {
+  const words = desc.split(' ');
+  if (words.length > 70) {
+    return words.slice(0, 70).join(' ') + '...';
+  }
+  return desc;
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Searching for a Ticker Symbol
 
-### `npm run build` fails to minify
+To search for a financial instrument using its ticker symbol:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```javascript
+function searchTicker(symbol) {
+  fetch(`https://api.example.com/search?symbol=${symbol}&apikey=${API_KEY}`)
+    .then(response => response.json())
+    .then(data => {
+      // Handle the data
+    })
+    .catch(error => {
+      console.error("Error fetching data:", error);
+    });
+}
+```
+
+## API Explanation
+
+Our project relies on the Financial Modeling Prep API to fetch financial data. This API provides a wealth of information about stocks, cryptocurrencies, and other financial instruments.
+
+### Requesting Stock Data
+
+To fetch data for a specific stock, we make a GET request to the API's `quote` endpoint:
+
+```javascript
+const symbol = "AAPL"; // Example for Apple Inc.
+fetch(`https://api.financialmodelingprep.com/api/v3/quote/${symbol}?apikey=${API_KEY}`)
+  .then(response => response.json())
+  .then(data => {
+    // Handle the data
+  })
+  .catch(error => {
+    console.error("Error fetching stock data:", error);
+  });
+```
+
+### Sample JSON Response
+
+Here's an example of the JSON response when querying for Apple Inc.:
+
+```json
+[
+  {
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "price": 150.12,
+    "changesPercentage": 0.58,
+    "change": 0.87,
+    "marketCap": 2485170000000,
+    "exchange": "NASDAQ",
+    "industry": "Computer Hardware",
+    "description": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. It also sells various related services.",
+    "ceo": "Tim Cook",
+    ...
+  }
+]
+```
+
+This response provides a wealth of information about the stock, including its current price, market capitalization, and a brief description.
+
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

@@ -21,7 +21,7 @@ Chart.register(
 
 function App() {
   const api = process.env.REACT_APP_API_KEY;
- 
+  console.log(api)
 
   
   

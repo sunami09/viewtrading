@@ -21,7 +21,7 @@ Chart.register(
 
 function App() {
   const api = process.env.REACT_APP_API_KEY;
-  console.log(api + "new")
+  
 
   
   
@@ -96,7 +96,7 @@ function App() {
 
   const fetchData = async () => {
     try{
-      console.log(`https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${api}`)
+     
       const response = await fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${symbol}?apikey=${api}`)
       
       const data = await response.json();

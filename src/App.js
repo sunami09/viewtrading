@@ -23,6 +23,7 @@ function App() {
   const api = process.env.REACT_APP_API_KEY;
   
 
+  const [displaysymbol,setDsymbol]= useState('')
   
   
   const [price, changeprice] = useState([]);
@@ -132,6 +133,7 @@ function App() {
         changedates(data.map(item => item.date))
         updateShow(true);
         try {
+          setDsymbol(quote.profile.symbol)
           setName(quote.profile.companyName)
           setPrice('$' + quote.profile.price)
           setCeo(quote.profile.ceo)
@@ -173,7 +175,7 @@ function App() {
           <Moreinfo>
             <Entity>
               <Identifier>Symbol : </Identifier>
-              <Value>{symbol}</Value>
+              <Value>{displaysymbol}</Value>
             </Entity>
             <Entity>
               <Identifier>Industry : </Identifier>
